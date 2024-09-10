@@ -21,7 +21,7 @@ jobs:
       run: cmake --version
 
     - name: Configure CMake
-      run: cmake -S Builds -B Builds
+      run: cmake -S . -B Builds
 
     - name: Build the project
       run: cmake --build Builds --target je2be-desktop --config Release --parallel
