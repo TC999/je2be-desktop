@@ -17,6 +17,9 @@ jobs:
     - name: Install CMake
       run: choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System' --yes
 
+    - name: Verify CMake installation
+      run: cmake --version
+
     - name: Configure CMake
       run: cmake -S Builds -B Builds
 
