@@ -9,7 +9,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Initialize submodules
       run: git submodule update --init --recursive
@@ -21,10 +21,10 @@ jobs:
       run: cmake --version
 
     - name: Configure CMake
-      run: cmake -S . -B Builds
+      run: cmake -S . -B Builds --log-level=VERBOSE
 
     - name: Build the project
-      run: cmake --build Builds --target je2be-desktop --config Release --parallel
+      run: cmake --build Builds --target je2be-desktop --config Release --parallel --verbose
 
     - name: Archive the build output
       uses: actions/upload-artifact@v3
