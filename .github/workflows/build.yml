@@ -1,0 +1,25 @@
+name: Build
+
+on: workflow_dispatch
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    #- name: install cmake
+    #  run: choco install cmake -y
+
+    - name: configure
+      run: |
+        cd Builds
+        cmake ..
+
+    - name: build
+      run: |
+        cmake --build . --target je2be-desktop --config Release --parallel
