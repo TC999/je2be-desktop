@@ -22,4 +22,5 @@ jobs:
 
     - name: build
       run: |
+        cd Builds
         cmake --build . --target je2be-desktop --config Release --parallel
