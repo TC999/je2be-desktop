@@ -6,27 +6,29 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(BUILD_SHARED_LIBS OFF)
-add_definitions(
-  /DUNICODE
-  /D_UNICODE
-  /utf-8
-  /we4828
-  /wd4100 # Suppress "unreferenced formal parameter" warnings
-)
-add_compile_options(
-  /Ot # Favor Fast Code
-  /Oi # Generate Intrinsic Functions
-  $<IF:$<CONFIG:Debug>,/ZI,/Zi>
-  $<IF:$<CONFIG:Debug>,,/GL> # Enable: Whole program optimization
-  $<IF:$<CONFIG:Debug>,/MDd,/MD>
-  /MP
-  /Zc:__cplusplus # Enable updated __cplusplus macro
-  /Zc:preprocessor # Enable preprocessor conformance mode
-)
-add_link_options(
-  /DEBUG
-  $<IF:$<CONFIG:Debug>,,/LTCG> # Enable: Link-time code generation
-)
+if (MSVC)
+  add_definitions(
+    /DUNICODE
+    /D_UNICODE
+    /utf-8
+    /we4828
+    /wd4100 # Suppress "unreferenced formal parameter" warnings
+  )
+  add_compile_options(
+    /Ot # Favor Fast Code
+    /Oi # Generate Intrinsic Functions
+    $<IF:$<CONFIG:Debug>,/ZI,/Zi>
+    $<IF:$<CONFIG:Debug>,,/GL> # Enable: Whole program optimization
+    $<IF:$<CONFIG:Debug>,/MDd,/MD>
+    /MP
+    /Zc:__cplusplus # Enable updated __cplusplus macro
+    /Zc:preprocessor # Enable preprocessor conformance mode
+  )
+  add_link_options(
+    /DEBUG
+    $<IF:$<CONFIG:Debug>,,/LTCG> # Enable: Link-time code generation
+  )
+endif()
 
 include(cmake/CPM.cmake)
 

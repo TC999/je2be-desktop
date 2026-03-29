@@ -3,7 +3,7 @@ name: Build
 on: workflow_dispatch
 
 jobs:
-  build:
+  build-windows:
     runs-on: windows-latest
 
     steps:
@@ -24,3 +24,24 @@ jobs:
       run: |
         cd Builds
         cmake --build . --target je2be-desktop --config Release --parallel
+
+  build-linux:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libx11-dev libxext-dev libxinerama-dev libxrandr-dev libxcursor-dev libxrender-dev libxcomposite-dev libx11-xcb-dev libxkbcommon-dev libxkbcommon-x11-dev libasound2-dev libgl1-mesa-dev libglu1-mesa-dev libgtk-3-dev libwebkit2gtk-4.1-dev pkg-config
+
+      - name: Config & build
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          cmake --build . --target je2be-desktop --config Release --parallel
