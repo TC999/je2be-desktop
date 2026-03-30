@@ -27,6 +27,9 @@ jobs:
 
   build-linux:
     runs-on: ubuntu-24.04
+    env:
+      CFLAGS: -fdiagnostics-color=always
+      CXXFLAGS: -fdiagnostics-color=always
 
     steps:
       - name: Checkout repository
