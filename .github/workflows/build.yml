@@ -48,3 +48,9 @@ jobs:
           cd build
           cmake ..
           cmake --build . --target je2be-desktop --config Release --parallel 4
+      
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: je2be-desktop-linux
+          path: build/je2be-desktop_*/Release
