@@ -159,6 +159,15 @@ target_link_libraries(je2be-desktop
 
 target_include_directories(je2be-desktop PRIVATE src)
 
+# Set RPATH for non-Windows platforms so the executable can find shared libraries
+# in the same directory when relocated
+if(NOT WIN32)
+  set_target_properties(je2be-desktop PROPERTIES
+    BUILD_RPATH "$<TARGET_FILE_DIR:je2be-desktop>"
+    INSTALL_RPATH "$ORIGIN"
+    BUILD_WITH_INSTALL_RPATH FALSE)
+endif()
+
 if(WIN32)
   include_external_msproject(Package Package/Package.wapproj
     TYPE c7167f0d-bc9f-4e6e-afe1-012c56b48db5
@@ -196,14 +205,12 @@ if(WIN32)
       "$<TARGET_FILE_DIR:je2be-desktop>/"
     COMMENT "Copy mimalloc dlls to exe output directory")
 elseif(UNIX)
+  # Copy mimalloc shared library using pure CMake commands
   add_custom_command(TARGET je2be-desktop POST_BUILD
-    COMMAND
-      "${CMAKE_COMMAND}"
-      -E
-      copy_if_different
-      "$<TARGET_FILE:mimalloc>"
-      "$<TARGET_FILE_DIR:je2be-desktop>/"
-    COMMENT "Copy mimalloc shared library to exe output directory")
+    COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_BINARY_DIR}/_deps/mimalloc-build/libmimalloc.so.2.2" "$<TARGET_FILE_DIR:je2be-desktop>/"
+    COMMAND ${CMAKE_COMMAND} -E create_symlink "libmimalloc.so.2.2" "$<TARGET_FILE_DIR:je2be-desktop>/libmimalloc.so.2"
+    COMMAND ${CMAKE_COMMAND} -E create_symlink "libmimalloc.so.2" "$<TARGET_FILE_DIR:je2be-desktop>/libmimalloc.so"
+    COMMENT "Copy mimalloc shared library and create symlinks")
 endif()
 
 source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${je2be_desktop_files})
