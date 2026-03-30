@@ -47,4 +47,4 @@ jobs:
           mkdir build
           cd build
           cmake ..
-          cmake --build . --target je2be-desktop --config Release --parallel 2
+          cmake --build . --target je2be-desktop --config Release --parallel $(( $(nproc) - 2 ))
