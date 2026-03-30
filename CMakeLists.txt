@@ -163,9 +163,9 @@ target_include_directories(je2be-desktop PRIVATE src)
 # in the same directory when relocated
 if(NOT WIN32)
   set_target_properties(je2be-desktop PROPERTIES
-    BUILD_RPATH "$<TARGET_FILE_DIR:je2be-desktop>"
+    BUILD_RPATH "$ORIGIN"
     INSTALL_RPATH "$ORIGIN"
-    BUILD_WITH_INSTALL_RPATH FALSE)
+    BUILD_WITH_INSTALL_RPATH TRUE)
 endif()
 
 if(WIN32)
