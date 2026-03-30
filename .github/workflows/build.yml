@@ -23,7 +23,7 @@ jobs:
     - name: build
       run: |
         cd Builds
-        cmake --build . --target je2be-desktop --config Release --parallel
+        cmake --build . --target je2be-desktop --config Release --parallel 2
 
   build-linux:
     runs-on: ubuntu-24.04
@@ -44,4 +44,4 @@ jobs:
           mkdir build
           cd build
           cmake ..
-          cmake --build . --target je2be-desktop --config Release --parallel
+          cmake --build . --target je2be-desktop --config Release --parallel 2
