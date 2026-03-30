@@ -1,5 +1,6 @@
 #include "TaskbarProgress.h"
 
+#if JUCE_WINDOWS
 #include <shobjidl_core.h>
 
 #include <optional>
@@ -129,3 +130,36 @@ void TaskbarProgress::update(double progress) {
 }
 
 } // namespace je2be::desktop
+
+#else
+
+namespace je2be::desktop {
+
+class TaskbarProgress::Impl {
+public:
+  void setState(State state) {
+    (void)state;
+  }
+
+  void update(double progress) {
+    (void)progress;
+  }
+};
+
+TaskbarProgress::TaskbarProgress()
+    : fImpl(std::make_unique<Impl>()) {
+}
+
+TaskbarProgress::~TaskbarProgress() = default;
+
+void TaskbarProgress::setState(State state) {
+  fImpl->setState(state);
+}
+
+void TaskbarProgress::update(double progress) {
+  fImpl->update(progress);
+}
+
+} // namespace je2be::desktop
+
+#endif

@@ -5,7 +5,9 @@
 
 #include <minecraft-file.hpp>
 
+#if JUCE_WINDOWS
 #include <shlwapi.h>
+#endif
 
 #if defined(CopyFile)
 #undef CopyFile
@@ -39,10 +41,14 @@ static std::string PathStringForLogging(juce::File file) {
       TYPE(currentApplicationFile),
       TYPE(invokedExecutableFile),
       TYPE(hostApplicationPath),
+    #if JUCE_WINDOWS
       TYPE(windowsSystemDirectory),
       TYPE(globalApplicationsDirectory),
       TYPE(globalApplicationsDirectoryX86),
       TYPE(windowsLocalAppData),
+    #else
+      TYPE(globalApplicationsDirectory),
+    #endif
   };
 #undef TYPE
 
@@ -129,6 +135,7 @@ static Status CopyDirectoryRecursive(juce::File from, juce::File to, std::vector
 }
 
 static inline bool IsRemoteDrive(juce::File const &f) {
+#if JUCE_WINDOWS
   auto fullPathName = f.getFullPathName();
   if (fullPathName.isEmpty()) {
     return false;
@@ -144,6 +151,10 @@ static inline bool IsRemoteDrive(juce::File const &f) {
   }
   auto n = GetDriveTypeW(s.data());
   return n == DRIVE_REMOTE;
+#else
+  (void)f;
+  return false;
+#endif
 }
 
 } // namespace je2be::desktop

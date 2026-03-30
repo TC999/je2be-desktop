@@ -23,7 +23,9 @@
 #include "component/x2j/X2JConvertProgress.h"
 
 #include <mimalloc.h>
+#if JUCE_WINDOWS
 #include <objbase.h>
+#endif
 
 namespace je2be::desktop {
 
@@ -45,7 +47,9 @@ public:
 
   void initialise(const juce::String &commandLine) override {
     (void)mi_version();
+#if JUCE_WINDOWS
     (void)CoInitialize(nullptr);
+#endif
 
     fLaf.reset(new je2be::desktop::LookAndFeel);
     LookAndFeel::setDefaultLookAndFeel(fLaf.get());
@@ -61,7 +65,9 @@ public:
   void shutdown() override {
     fMainWindow = nullptr;
     Thread::Wait();
+#if JUCE_WINDOWS
     CoUninitialize();
+#endif
   }
 
   void systemRequestedQuit() override {

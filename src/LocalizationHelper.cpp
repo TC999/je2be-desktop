@@ -7,6 +7,8 @@
 #include <windows.h>
 #endif
 
+#include <cstdlib>
+
 using namespace juce;
 
 namespace je2be::desktop {
@@ -28,6 +30,8 @@ LocalisedStrings *LocalizationHelper::CurrentLocalisedStrings() {
 std::vector<String> LocalizationHelper::PreferredLanguages() {
   using namespace std;
   vector<String> ret;
+
+#if JUCE_WINDOWS
 
   ULONG num = 0;
   ULONG size = 0;
@@ -57,6 +61,48 @@ std::vector<String> LocalizationHelper::PreferredLanguages() {
   if (lang.isNotEmpty()) {
     ret.push_back(lang);
   }
+#else
+  auto normalize = [](juce::String lang) {
+    lang = lang.upToFirstOccurrenceOf(".", false, false);
+    lang = lang.upToFirstOccurrenceOf("@", false, false);
+    lang = lang.replaceCharacter('_', '-');
+
+    if (lang.startsWithIgnoreCase("ja")) {
+      return juce::String("ja-JP");
+    }
+    if (lang.startsWithIgnoreCase("zh-CN") || lang.startsWithIgnoreCase("zh-Hans") || lang.startsWithIgnoreCase("zh")) {
+      return juce::String("zh-Hans");
+    }
+    return lang;
+  };
+
+  if (auto language = std::getenv("LANGUAGE"); language && *language) {
+    juce::String joined(language);
+    juce::StringArray parts;
+    parts.addTokens(joined, ":", "");
+    for (auto const &part : parts) {
+      auto normalized = normalize(part.trim());
+      if (normalized.isNotEmpty()) {
+        ret.push_back(normalized);
+      }
+    }
+  }
+
+  if (auto lang = std::getenv("LANG"); lang && *lang) {
+    auto normalized = normalize(juce::String(lang));
+    if (normalized.isNotEmpty()) {
+      ret.push_back(normalized);
+    }
+  }
+
+  if (ret.empty()) {
+    auto normalized = normalize(juce::SystemStats::getUserLanguage());
+    if (normalized.isNotEmpty()) {
+      ret.push_back(normalized);
+    }
+  }
+#endif
+
   return ret;
 }
 
