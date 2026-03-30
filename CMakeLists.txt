@@ -195,6 +195,15 @@ if(WIN32)
       "${mimalloc_BINARY_DIR}/\$(Configuration)/mimalloc-redirect.dll"
       "$<TARGET_FILE_DIR:je2be-desktop>/"
     COMMENT "Copy mimalloc dlls to exe output directory")
+elseif(UNIX)
+  add_custom_command(TARGET je2be-desktop POST_BUILD
+    COMMAND
+      "${CMAKE_COMMAND}"
+      -E
+      copy_if_different
+      "$<TARGET_FILE:mimalloc>"
+      "$<TARGET_FILE_DIR:je2be-desktop>/"
+    COMMENT "Copy mimalloc shared library to exe output directory")
 endif()
 
 source_group(TREE ${CMAKE_CURRENT_LIST_DIR} FILES ${je2be_desktop_files})
